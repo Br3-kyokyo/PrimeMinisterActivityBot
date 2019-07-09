@@ -4,6 +4,9 @@ require 'pry'
 require 'twitter'
 require 'uri'
 require './env'
+require 'logger'
+
+$log = Logger.new('./log/server.log')
 
 class DayOfPrimeMinisterCrawler
     
@@ -15,12 +18,14 @@ class DayOfPrimeMinisterCrawler
     def excute
         current_path = get_current_path
         unless current_path.eql?(@current_path)
+            $log.info("Date update detected! reset status.")
             @actions = [], @length = 0
             @current_path = current_path
         end
 
         @actions = get_body_array
         unless @actions.length.eql?(@length)
+            $log.info("New activities Detected! activities-num:#{@actions.length - @length}")
             post_twitter(@actions.length - @length)
             @length = @actions.length
         end
