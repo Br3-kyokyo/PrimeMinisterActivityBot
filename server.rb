@@ -21,21 +21,30 @@ class DayOfPrimeMinisterCrawler
 
         @actions = get_body_array
         unless @actions.length.eql?(@length)
+            post_twitter(@actions.length - @length)
             @length = @actions.length
-            post_twitter
         end
     end
 
     private
 
-    def post_twitter
+    def post_twitter(len)
         @client ||= Twitter::REST::Client.new do |config|
             config.consumer_key        = ENV['API_KEY']
             config.consumer_secret     = ENV['API_SECRET']
             config.access_token        = ENV['ACCESS_TOKEN']
             config.access_token_secret = ENV['ACCESS_SECRET']
         end
-        @client.update("#{@actions[@length-1]} #首相動静\n#{JIJI_HOST}#{@current_path}")
+        body = ''
+        len.downto(1) do |pos|
+            body += "#{@actions[@length - pos]}\n"
+        end
+
+        if body.length > 115
+            @client.update("#{body[0,115]}...(略)\n #首相動静\n#{JIJI_HOST}#{@current_path}")
+        else
+            @client.update("#{body} #首相動静\n#{JIJI_HOST}#{@current_path}")
+        end 
     end
 
     def get_current_path
