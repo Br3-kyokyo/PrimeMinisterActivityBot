@@ -53,7 +53,7 @@ class DayOfPrimeMinisterCrawler
         news_list = doc.css('#Main > div.MainInner > div.ArticleListMain > ul.LinkList > li')
         news_list.each do |news|
             if news.css('a > p').text.include?('首相動静')
-                return Nokogiri::HTML(open(JIJI_HOST + news.at('a')[:href], OPT)).css('.ArticleText > p').inner_html.delete("\t\n　").gsub(/<img.*>/, '').split("<br>")
+                return Nokogiri::HTML(open(JIJI_HOST + news.at('a')[:href], OPT)).css('.ArticleText > p').inner_html.delete("\t\n　").gsub(/<img.*>|<!--.*?-->|<a.*?>|<\/a>/, '').split("<br>")
             end
         end
     end
