@@ -9,9 +9,10 @@ class DayOfPrimeMinisterCrawler
     
     JIJI_HOST = 'https://www.jiji.com'
     JIJI_LIST_PATH = '/jc/list?g=pol'
+    OPT = {}
+    OPT['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.90 Safari/537.36'
 
     def excute
-
         current_path = get_current_path
         unless current_path.eql?(@current_path)
             @actions = [], @length = 0
@@ -38,7 +39,7 @@ class DayOfPrimeMinisterCrawler
     end
 
     def get_current_path
-        doc = Nokogiri::HTML(open(JIJI_HOST + JIJI_LIST_PATH))
+        doc = Nokogiri::HTML(open(JIJI_HOST + JIJI_LIST_PATH, OPT))
         news_list = doc.css('#Main > div.MainInner > div.ArticleListMain > ul.LinkList > li')
         news_list.each do |news|
             if news.css('a > p').text.include?('首相動静')
@@ -48,11 +49,11 @@ class DayOfPrimeMinisterCrawler
     end
 
     def get_body_array
-        doc = Nokogiri::HTML(open(JIJI_HOST + JIJI_LIST_PATH))
+        doc = Nokogiri::HTML(open(JIJI_HOST + JIJI_LIST_PATH, OPT))
         news_list = doc.css('#Main > div.MainInner > div.ArticleListMain > ul.LinkList > li')
         news_list.each do |news|
             if news.css('a > p').text.include?('首相動静')
-                return Nokogiri::HTML(open(JIJI_HOST + news.at('a')[:href])).css('.ArticleText > p').inner_html.delete("\t\n　").gsub(/<img.*>/, '').split("<br>")
+                return Nokogiri::HTML(open(JIJI_HOST + news.at('a')[:href], OPT)).css('.ArticleText > p').inner_html.delete("\t\n　").gsub(/<img.*>/, '').split("<br>")
             end
         end
     end
