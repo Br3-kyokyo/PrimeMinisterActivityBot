@@ -11,9 +11,11 @@ class DayOfPrimeMinisterCrawler
     JIJI_LIST_PATH = '/jc/list?g=pol'
 
     def excute
-        unless get_current_path.eql?(@current_path)
+
+        current_path = get_current_path
+        unless current_path.eql?(@current_path)
             @actions = [], @length = 0
-            @current_path = get_current_path
+            @current_path = current_path
         end
 
         @actions = get_body_array
