@@ -26,8 +26,9 @@ class DayOfPrimeMinisterCrawler
         @actions = get_body_array
         unless @actions.length.eql?(@length)
             $log.info("New activities Detected! activities-num:#{@actions.length - @length}")
-            post_twitter(@actions.length - @length)
+            prev_len = @length
             @length = @actions.length
+            post_twitter(@length - prev_len)
         end
     end
 
@@ -42,6 +43,7 @@ class DayOfPrimeMinisterCrawler
         end
         body = ''
         len.downto(1) do |pos|
+            $log.info("detected post: \"#{@actions[@length - pos]}\"")
             body += "#{@actions[@length - pos]}\n"
         end
 
