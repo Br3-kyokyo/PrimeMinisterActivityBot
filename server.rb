@@ -5,6 +5,7 @@ require 'twitter'
 require 'uri'
 require './env'
 require 'logger'
+require 'time'
 
 $log = Logger.new('./log/server.log')
 
@@ -64,22 +65,14 @@ class DayOfPrimeMinisterCrawler
 
     def get_current_path
         doc = Nokogiri::HTML(open(JIJI_HOST + JIJI_LIST_PATH, OPT))
-        news_list = doc.css('#Main > div.MainInner > div.ArticleListMain > ul.LinkList > li')
-        news_list.each do |news|
-            if news.css('a > p').text.include?('首相動静')
-                return news.at('a')[:href]
-            end
-        end 
+        news_list = doc.css('#Main > div.MainInner > div.ArticleListMain > ul.LinkList > li > a')
+        pm_news_list = news_list.each_with_object [] {|news, h| h << news if news.at('p').text.include?('首相動静') }
+        latest_pm_news = pm_news_list.max_by {|pm_news| Time.parse(pm_news.at('span').text) }
+        latest_pm_news[:href]
     end
 
     def get_body_array
-        doc = Nokogiri::HTML(open(JIJI_HOST + JIJI_LIST_PATH, OPT))
-        news_list = doc.css('#Main > div.MainInner > div.ArticleListMain > ul.LinkList > li')
-        news_list.each do |news|
-            if news.css('a > p').text.include?('首相動静')
-                return Nokogiri::HTML(open(JIJI_HOST + news.at('a')[:href], OPT)).css('.ArticleText > p').inner_html.delete("\t\n　").gsub(/<img.*>|<!--.*?-->|<a.*?>|<\/a>/, '').split("<br>")
-            end
-        end
+        Nokogiri::HTML(open(JIJI_HOST + @current_path, OPT)).css('.ArticleText > p').inner_html.delete("\t\n　").gsub(/<img.*>|<!--.*?-->|<a.*?>|<\/a>/, '').split("<br>")
     end
 end
 
