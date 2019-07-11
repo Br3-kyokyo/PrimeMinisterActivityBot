@@ -49,7 +49,7 @@ class DayOfPrimeMinisterCrawler
         end
 
         if ENV["enviorment"].eql?("production")
-            #@client.update(proccess_body(body))
+            @client.update(proccess_body(body))
         elsif ENV["enviorment"].eql?("development")
             p proccess_body(body)
         end
