@@ -29,7 +29,7 @@ class DayOfPrimeMinisterCrawler
             $log.info("New activities Detected! activities-num:#{@actions.length - @length}")
             prev_len = @length
             @length = @actions.length
-            post_twitter(@length - prev_len)
+            post_twitter(@length - prev_len) unless is_first
         end
     end
 
@@ -73,6 +73,10 @@ class DayOfPrimeMinisterCrawler
 
     def get_body_array
         Nokogiri::HTML(open(JIJI_HOST + @current_path, OPT)).css('.ArticleText > p').inner_html.delete("\t\n　").gsub(/<img.*>|<!--.*?-->|<a.*?>|<\/a>/, '').split("<br>")
+    end
+
+    def is_first
+        @_not_first ? false : @_not_first = true
     end
 end
 
