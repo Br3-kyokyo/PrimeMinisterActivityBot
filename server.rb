@@ -66,7 +66,7 @@ class DayOfPrimeMinisterCrawler
     def get_current_path
         doc = Nokogiri::HTML(open(JIJI_HOST + JIJI_LIST_PATH, OPT))
         news_list = doc.css('#Main > div.MainInner > div.ArticleListMain > ul.LinkList > li > a')
-        pm_news_list = news_list.each_with_object [] {|news, h| h << news if news.at('p').text.include?('首相動静') }
+        pm_news_list = news_list.each_with_object([]) {|news, h| h << news if news.at('p').text.include?('首相動静') }
         latest_pm_news = pm_news_list.max_by {|pm_news| Time.parse(pm_news.at('span').text) }
         latest_pm_news[:href]
     end
