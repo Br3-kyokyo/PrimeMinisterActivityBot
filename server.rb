@@ -43,14 +43,22 @@ class DayOfPrimeMinisterCrawler
         end
         body = ''
         len.downto(1) do |pos|
-            $log.info("detected post: \"#{@actions[@length - pos]}\"")
+            $log.info("post: \"#{@actions[@length - pos]}\"")
             body += "#{@actions[@length - pos]}\n"
         end
 
+        if ENV["enviorment"].eql?("production")
+            #@client.update(proccess_body(body))
+        elsif ENV["enviorment"].eql?("development")
+            p proccess_body(body)
+        end
+    end
+
+    def proccess_body(body)
         if body.length > 115
-            @client.update("#{body[0,115]}...(略)\n #首相動静\n#{JIJI_HOST}#{@current_path}")
+            "#{body[0,115]}...(略)\n #首相動静\n#{JIJI_HOST}#{@current_path}"
         else
-            @client.update("#{body} #首相動静\n#{JIJI_HOST}#{@current_path}")
+            "#{body} #首相動静\n#{JIJI_HOST}#{@current_path}"
         end 
     end
 
