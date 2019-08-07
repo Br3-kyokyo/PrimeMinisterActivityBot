@@ -1,2 +1,28 @@
 #!/bin/bash
+
+CMDNAME=`basename $0`
+
+usage_exit() {
+    echo "Usage: $CMDNAME [-m mode]" 1>&2
+    exit 1
+}
+
+while getopts m: OPT
+do
+    case $OPT in
+        m)  FLAG_M="TRUE"; ENV=$OPTARG ;;
+        h)  usage_exit ;;
+        \?) usage_exit ;;
+    esac
+done
+
+
+if [ "$FLAG_M" = "TRUE" ]; then
+    if [ "$ENV" = "development" ]; then
+        ruby server.rb
+    else
+        usage_exit
+    fi
+fi
+
 nohup ruby server.rb > ./log/out.log 2> ./log/error.log &
