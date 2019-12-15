@@ -1,5 +1,4 @@
 require 'twitter'
-require './env'
 require 'logger'
 
 class TweetBot

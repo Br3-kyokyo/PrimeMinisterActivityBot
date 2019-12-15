@@ -11,3 +11,5 @@ gem "nokogiri", "~> 1.10"
 gem "pry-byebug", "~> 3.7"
 
 gem "twitter", "~> 6.2"
+
+gem "httpclient", "~> 2.8"
