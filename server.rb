@@ -1,3 +1,4 @@
+require 'pry'
 require './PrimeMinisterWebCrawler'
 
 while true

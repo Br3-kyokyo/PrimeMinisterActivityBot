@@ -1,19 +1,21 @@
 require 'nokogiri'
 require 'open-uri'
-require 'pry'
 require 'uri'
 require 'logger'
 require 'time'
 require './TweetBot.rb'
+require 'yaml'
 
 $log = Logger.new('./log/server.log')
 
 class PrimeMinisterWebCrawler
+
+    data = open('config.yml', 'r') { |f| YAML.load(f) }
     
-    JIJI_HOST = 'https://www.jiji.com'
-    JIJI_LIST_PATH = '/jc/list?g=pol'
-    OPT = {}
-    OPT['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.90 Safari/537.36'
+    JIJI_HOST = data["TARGET_URL"]
+    JIJI_LIST_PATH = data["TARGET_LIST_PATH"] 
+    OPT = {} 
+    OPT['User-Agent'] = data["USER_AGENT"]
 
     def self.update
         update_article_path
@@ -35,7 +37,7 @@ class PrimeMinisterWebCrawler
             body += "#{@activities[@row_count - pos]}\n"
         end
 
-        TweetBot.post(body) unless is_first
+        TweetBot.post(body, '#首相動静', "#{JIJI_HOST}#{@current_path}") unless is_first
     end
 
     def self.update_activities
