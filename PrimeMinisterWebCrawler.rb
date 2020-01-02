@@ -37,7 +37,7 @@ class PrimeMinisterWebCrawler
             body += "#{@activities[@row_count - pos]}\n"
         end
 
-        TweetBot.post(body, '#首相動静', "#{JIJI_HOST}#{@current_path}") unless is_first
+        TweetBot.post(body, '#首相動静', "#{JIJI_HOST}#{@today_article_path}") 
     end
 
     def self.update_activities
