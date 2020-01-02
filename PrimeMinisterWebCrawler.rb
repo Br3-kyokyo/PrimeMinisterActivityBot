@@ -37,7 +37,7 @@ class PrimeMinisterWebCrawler
             body += "#{@activities[@row_count - pos]}\n"
         end
 
-        TweetBot.post(body, '#首相動静', "#{JIJI_HOST}#{@today_article_path}") 
+        TweetBot.post(body, '#首相動静', "#{JIJI_HOST}#{@today_article_path}") unless is_first
     end
 
     def self.update_activities
@@ -57,7 +57,7 @@ class PrimeMinisterWebCrawler
         doc = Nokogiri::HTML(open(JIJI_HOST + JIJI_LIST_PATH, OPT))
         news_list = doc.css('#Main > div.MainInner > div.ArticleListMain > ul.LinkList > li > a')
         pm_news_list = news_list.each_with_object([]) {|news, h| h << news if news.at('p').text.include?('首相動静') }
-        latest_pm_news = pm_news_list.max_by {|pm_news| Time.parse(pm_news.at('span').text) }
+        latest_pm_news = pm_news_list.max_by {|pm_news| pm_news[:href].match(/\/jc\/article\?k=(\d+)&g=pol/)[1] }
         latest_pm_news[:href]
     end
 
